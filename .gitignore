@@ -25,4 +25,10 @@ build/
 dist/
 *.egg-info/
 
+# Docker
+docker-compose.override.yml
+.docker/
+docker-volumes/
+logs/
+
 docs/**
