@@ -11,7 +11,7 @@ def setup_logger():
   if not os.path.exists("logs"):
     os.makedirs("logs")
   
-  logger = logging.getLogger("JoinRequestBot")
+  logger = logging.getLogger("highTierBots")
   logger.setLevel(logging.DEBUG)
   
   detailed_formatter = logging.Formatter(
