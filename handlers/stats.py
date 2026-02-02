@@ -7,7 +7,7 @@ from pyrogram.types import Message
 from database.mongo import db
 from logger import logger
 from config import OWNERS
-from utils import get_readable_time, format_stats
+from utils.helpers import get_readable_time, format_stats
 from datetime import datetime
 
 # Stats Command only for Owners
