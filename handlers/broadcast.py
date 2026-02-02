@@ -8,7 +8,7 @@ from pyrogram.errors import (
 )
 from pyrogram import Client, filters
 from database import db
-from config import OWNERS
+from config import OWNERS_ID
 import asyncio
 import datetime
 import time
@@ -52,7 +52,7 @@ async def broadcast_message(user_id, message):
 
 
 # Broadcast Command only for Owners
-@Client.on_message(filters.command("ownerbroadcast") & filters.user(OWNERS) & filters.reply)
+@Client.on_message(filters.command("ownerbroadcast") & filters.user(OWNERS_ID) & filters.reply)
 async def broadcast_command(bot: Client, message):
   """Broadcast message to all users"""
   

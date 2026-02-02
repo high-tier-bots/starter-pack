@@ -4,10 +4,10 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 from database import db
 from logger import logger
-from config import OWNERS 
+from config import OWNERS_ID 
 
 # Set_force Command only for Owners
-@Client.on_message(filters.command('setforce') & filters.user(OWNERS))
+@Client.on_message(filters.command('setforce') & filters.user(OWNERS_ID))
 async def set_force(bot: Client, message: Message):
   """Set force mode ON or OFF"""
   
@@ -33,7 +33,7 @@ async def set_force(bot: Client, message: Message):
       pass
     
 # Addchannel Command only for Owners
-@Client.on_message(filters.command('addchannel') & filters.user(OWNERS))
+@Client.on_message(filters.command('addchannel') & filters.user(OWNERS_ID))
 async def add_channel(bot: Client, message: Message):
   """Add a channel or group to the database"""
   

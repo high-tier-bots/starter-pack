@@ -33,7 +33,7 @@ def validate_config():
     errors.append("Missing: API_ID, API_HASH, or BOT_TOKEN")
   
   if not LOG_GROUP_ID or not OWNERS_ID:
-    errors.append("Missing: LOG_GROUP_ID and OWNERS")
+    errors.append("Missing: LOG_GROUP_ID and OWNERS_ID")
   
   if not DB_URI or not DB_NAME:
     errors.append("Missing: DB_URI or DB_NAME")
