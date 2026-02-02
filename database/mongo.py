@@ -1,7 +1,7 @@
 #(©)HighTierBots - Database Configuration
 
 import motor.motor_asyncio
-from logger import logger
+from utils.logger import logger
 from datetime import datetime
 
 class Database:

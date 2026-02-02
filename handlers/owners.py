@@ -3,7 +3,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from database.mongo import db
-from logger import logger
+from utils.logger import logger
 from config import OWNERS_ID 
 
 # Set_force Command only for Owners

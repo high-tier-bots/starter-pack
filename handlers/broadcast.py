@@ -12,7 +12,7 @@ from config import OWNERS_ID
 import asyncio
 import datetime
 import time
-from logger import logger
+from utils.logger import logger
 
 
 async def broadcast_message(user_id, message):

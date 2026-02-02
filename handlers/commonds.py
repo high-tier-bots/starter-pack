@@ -4,7 +4,7 @@ from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 from database.mongo import db
-from logger import logger
+from utils.logger import logger
 from config import USER_REPLY_TEXT
 from handlers.bot_log import send_bot_start_log
 

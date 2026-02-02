@@ -2,7 +2,7 @@
 
 from pyrogram import Client
 from pyrogram.errors import FloodWait
-from logger import logger
+from utils.logger import logger
 from datetime import datetime
 from config import LOG_GROUP_ID
 

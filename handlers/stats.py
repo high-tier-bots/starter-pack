@@ -5,7 +5,7 @@ import psutil
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from database.mongo import db
-from logger import logger
+from utils.logger import logger
 from config import OWNERS
 from utils.helpers import get_readable_time, format_stats
 from datetime import datetime
