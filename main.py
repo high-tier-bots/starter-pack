@@ -40,12 +40,13 @@ class HighTierBots(Client):
       # Write Their Menu Commands for user
       user_commands = [
         BotCommand(command="start", description="Welcome message"),
-        BotCommand(command="check", description="Check That Bot is running or not"),
+        BotCommand(command="debug", description="Check That Bot is running or not"),
       ]
       
       # Write Their Menu Commands for owner
       owner_commands = [
         BotCommand(command="start", description="Welcome message"),
+        BotCommand(command="stats", description="Show bot statistics"),
         BotCommand(command="addadmin", description="Add admin"),
         BotCommand(command="removeadmin", description="Remove admin"),
         BotCommand(command="setforce", description="ON/OFF set force"),
