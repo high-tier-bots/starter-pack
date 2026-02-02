@@ -13,7 +13,7 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 
 # ===== LOGGING & ADMIN =====
 LOG_GROUP_ID = int(os.environ.get("LOG_GROUP_ID", 0))
-OWNERS = [int(x) for x in os.environ.get("OWNERS", "").split(",") if x.strip()] if os.environ.get("OWNERS") else []
+OWNERS_ID = [int(x) for x in os.environ.get("OWNERS_ID", "").split(",") if x.strip()] if os.environ.get("OWNERS_ID") else []
 
 # ===== DATABASE =====
 DB_URI = os.environ.get("DB_URI", "")
@@ -32,7 +32,7 @@ def validate_config():
   if not API_ID or not API_HASH or not BOT_TOKEN:
     errors.append("Missing: API_ID, API_HASH, or BOT_TOKEN")
   
-  if not LOG_GROUP_ID or not OWNERS:
+  if not LOG_GROUP_ID or not OWNERS_ID:
     errors.append("Missing: LOG_GROUP_ID and OWNERS")
   
   if not DB_URI or not DB_NAME:

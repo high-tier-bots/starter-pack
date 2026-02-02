@@ -5,7 +5,7 @@ from datetime import datetime
 from flask import Flask
 from pyrogram import Client
 from pyrogram.types import BotCommand, BotCommandScopeAllPrivateChats, BotCommandScopeChat
-from config import API_ID, API_HASH, BOT_TOKEN, DB_URI, DB_NAME, OWNER_ID, validate_config
+from config import API_ID, API_HASH, BOT_TOKEN, DB_URI, DB_NAME, OWNERS_ID, validate_config
 from database import init_db
 from logger import logger
 
@@ -60,15 +60,15 @@ class HighTierBots(Client):
       )
       logger.info("User commands registered successfully")
       
-      for owner_id in OWNER_ID:
+      for owners_id in OWNERS_ID:
         try:
           await self.set_bot_commands(
             commands=owner_commands,
-            scope=BotCommandScopeChat(chat_id=owner_id)
+            scope=BotCommandScopeChat(chat_id=owners_id)
           )
-          logger.info(f"Oowner commands registered for user {owner_id}")
+          logger.info(f"Oowner commands registered for user {owners_id}")
         except Exception as e:
-          logger.error(f"Failed to register commands for owner {owner_id}: {e}")
+          logger.error(f"Failed to register commands for owners {owners_id}: {e}")
       
       print("✅ Bot commands registered")
         
