@@ -4,7 +4,7 @@ import os
 import psutil
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from database import db
+from database.mongo import db
 from logger import logger
 from config import OWNERS
 from utils import get_readable_time, format_stats

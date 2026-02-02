@@ -6,7 +6,7 @@ from flask import Flask
 from pyrogram import Client
 from pyrogram.types import BotCommand, BotCommandScopeAllPrivateChats, BotCommandScopeChat
 from config import API_ID, API_HASH, BOT_TOKEN, DB_URI, DB_NAME, OWNERS_ID, validate_config
-from database import init_db
+from database.mongo import init_db
 from logger import logger
 
 app = Flask(__name__)

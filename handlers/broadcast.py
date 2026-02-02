@@ -7,7 +7,7 @@ from pyrogram.errors import (
     PeerIdInvalid
 )
 from pyrogram import Client, filters
-from database import db
+from database.mongo import db
 from config import OWNERS_ID
 import asyncio
 import datetime
