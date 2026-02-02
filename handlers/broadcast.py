@@ -8,7 +8,7 @@ from pyrogram.errors import (
 )
 from pyrogram import Client, filters
 from database.mongo import db
-from config import OWNERS_ID
+from utils.config import OWNERS_ID
 import asyncio
 import datetime
 import time

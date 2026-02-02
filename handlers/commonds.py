@@ -5,7 +5,7 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 from database.mongo import db
 from utils.logger import logger
-from config import USER_REPLY_TEXT
+from utils.config import USER_REPLY_TEXT
 from handlers.bot_log import send_bot_start_log
 
 @Client.on_message(filters.command('start'))

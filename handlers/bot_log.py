@@ -4,7 +4,7 @@ from pyrogram import Client
 from pyrogram.errors import FloodWait
 from utils.logger import logger
 from datetime import datetime
-from config import LOG_GROUP_ID
+from utils.config import LOG_GROUP_ID
 
 
 async def send_bot_start_log(client: Client, user) -> bool:

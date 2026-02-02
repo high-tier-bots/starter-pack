@@ -4,7 +4,7 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 from database.mongo import db
 from utils.logger import logger
-from config import OWNERS_ID 
+from utils.config import OWNERS_ID 
 
 # Set_force Command only for Owners
 @Client.on_message(filters.command('setforce') & filters.user(OWNERS_ID))
