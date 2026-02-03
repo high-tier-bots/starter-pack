@@ -1,11 +1,14 @@
-#(©)HighTierBots - Bot & Flask Server
+"""
+#(©)HighTierBots - Bot main file
+Main bot file with instilization and command setup
+"""
 
 import asyncio
 from flask import Flask
 from pyrogram import Client
 from datetime import datetime
 from pyrogram.types import BotCommand, BotCommandScopeAllPrivateChats, BotCommandScopeChat
-from utils.config import API_ID, API_HASH, BOT_TOKEN, DB_URI, DB_NAME, OWNERS_ID, validate_config
+from utils.config import validate_config, API_ID, API_HASH, BOT_TOKEN, DB_URI, DB_NAME, OWNERS_ID
 from database.mongo import init_db
 from utils.logger import logger
 

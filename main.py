@@ -1,8 +1,9 @@
-#(©)HighTierBots - Bot main run file 
+"""
+#(©)HighTierBots - Bot main run file
+Main bot file with start and run the bot
+"""
 
-from bot import run
+from bot import main
 
 if __name__ == "__main__":
-  print("Starting Join Request Bot...")
-  run()
-  
+  main()
