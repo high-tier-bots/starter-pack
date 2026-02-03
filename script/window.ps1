@@ -26,24 +26,56 @@ if (-not (Test-Path "venv")) {
 
 Write-Host "Virtual environment ready."
 
-# Install requirements
+# Check if dependencies are already installed
 Write-Host ""
-Write-Host "Installing dependencies..."
-Write-Host "This may take a few minutes..."
+Write-Host "Checking dependencies..."
 Write-Host ""
 
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+$requirementsFile = "requirements.txt"
+$allInstalled = $true
 
-if ($LASTEXITCODE -ne 0) {
-    Write-Host ""
-    Write-Host "ERROR: Failed to install dependencies"
-    Read-Host "Press Enter to exit"
-    exit 1
+# Read requirements.txt and check each package
+if (Test-Path $requirementsFile) {
+    $packages = Get-Content $requirementsFile | Where-Object { $_ -and -not $_.StartsWith("#") }
+    
+    foreach ($package in $packages) {
+        $packageName = $package.Split("==")[0].Split(">=")[0].Split("<=")[0].Split("<")[0].Split(">")[0].Trim()
+        
+        $checkOutput = python -m pip show $packageName 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "❌ Missing: $packageName"
+            $allInstalled = $false
+        } else {
+            Write-Host "✅ Installed: $packageName"
+        }
+    }
 }
 
 Write-Host ""
-Write-Host "Dependencies installed successfully!"
+
+if ($allInstalled) {
+    Write-Host "All dependencies are already installed! ✅"
+    Write-Host "Skipping installation..."
+} else {
+    Write-Host "Installing missing dependencies..."
+    Write-Host "This may take a few minutes..."
+    Write-Host ""
+
+    python -m pip install --upgrade pip
+    python -m pip install -r requirements.txt
+
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host ""
+        Write-Host "ERROR: Failed to install dependencies"
+        Read-Host "Press Enter to exit"
+        exit 1
+    }
+
+    Write-Host ""
+    Write-Host "Dependencies installed successfully!"
+}
+
+Write-Host ""
 
 # Start the application
 Write-Host ""
