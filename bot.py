@@ -3,142 +3,158 @@
 Main bot file with instilization and command setup
 """
 
-import asyncio
-from flask import Flask
-from pyrogram import Client
-from datetime import datetime
-from pyrogram.types import BotCommand, BotCommandScopeAllPrivateChats, BotCommandScopeChat
-from utils.config import validate_config, API_ID, API_HASH, BOT_TOKEN, DB_URI, DB_NAME, OWNERS_ID
-from database.mongo import init_db
-from utils.logger import logger
+import sys
+from datetime import datetime, timezone
+from pyrogram import Client, filters, idle
+from pyrogram.types import Message
 
-app = Flask(__name__)
+# Import configuration
+from config.config import Config
+from config.database import db
 
-@app.route('/')
-def check():
-  """Health check endpoint"""
-  return 'HighTierBots Join Bot is Running! ✅'
+# Import database operations
+from database.mongo import MongoOperations
+
+# Import handlers
+from handlers.start import start_command
+from handlers.broadcast import broadcast_command
+from handlers.stats import stats_command
+
+# Import utilities
+from utils.logger import Logger
 
 
-class HighTierBots(Client):
-  """Custom Bot class extending Pyrogram Client"""
+class HighTierBots:
+  """Main HighTierBots Bot class."""
   
   def __init__(self):
-    super().__init__(
-      name="HighTierBots",
-      api_id=API_ID,
-      api_hash=API_HASH,
-      bot_token=BOT_TOKEN,
-      plugins=dict(root="handlers"),
-      workers=50,
-      sleep_threshold=10
-    )
-    self.uptime = None
-
-  async def register_bot_commands(self):
-    """Register bot commands for users and owner"""
+    """Initialize the bot."""
+    self.app = None
+    self.logger = None
+    self.start_time = datetime.now(timezone.utc)
     
+    print("=" * 60)
+    print("🤖 HighTierBots starter pack")
+    print("=" * 60)
+    print(f"Bot Owner: @{Config.OWNER_USERNAME}")
+    print(f"Owner ID: {Config.OWNER_ID}")
+    print(f"Database: {Config.DB_NAME}")
+    print("=" * 60)
+  
+  def setup_application(self):
+    """Set up the bot application."""
     try:
-      
-      # Write Their Menu Commands for user
-      user_commands = [
-        BotCommand(command="start", description="Welcome message"),
-        BotCommand(command="debug", description="Check That Bot is running or not"),
-      ]
-      
-      # Write Their Menu Commands for owner
-      owner_commands = [
-        BotCommand(command="start", description="Welcome message"),
-        BotCommand(command="stats", description="Show bot statistics"),
-        BotCommand(command="addadmin", description="Add admin"),
-        BotCommand(command="removeadmin", description="Remove admin"),
-        BotCommand(command="setforce", description="ON/OFF set force"),
-        BotCommand(command="addchannel", description="Add channel/group"),
-        BotCommand(command="removechannel", description="Remove channel/group")
-      ]
-        
-      await self.set_bot_commands(
-        commands=user_commands,
-        scope=BotCommandScopeAllPrivateChats()
+      self.app = Client(
+        name="HighTierBots",
+        api_id=Config.API_ID,
+        api_hash=Config.API_HASH,
+        bot_token=Config.BOT_TOKEN
       )
-      logger.info("User commands registered successfully")
       
-      for owners_id in OWNERS_ID:
-        try:
-          await self.set_bot_commands(
-            commands=owner_commands,
-            scope=BotCommandScopeChat(chat_id=owners_id)
-          )
-          logger.info(f"Oowner commands registered for user {owners_id}")
-        except Exception as e:
-          logger.error(f"Failed to register commands for owners {owners_id}: {e}")
+      print("✅ Bot application created successfully")
+      return True
       
-      print("✅ Bot commands registered")
-        
     except Exception as e:
-      logger.error(f"Error registering bot commands: {e}")
-
-  async def start(self):
-    """Start bot - initialize database and handlers"""
-    
+      print(f"❌ Failed to create bot application: {e}")
+      return False
+  
+  def register_handlers(self):
+    """Register command handlers."""
     try:
-      errors = validate_config()
-      if errors:
-        for error in errors:
-          logger.error(f"Config Error: {error}")
-        raise ValueError("Configuration validation failed")
+      # Public commands
+      @self.app.on_message(filters.command("start") & filters.private)
+      async def handle_start(client: Client, message: Message):
+        await start_command(client, message)
       
-      init_db(DB_URI, DB_NAME)
-      logger.info("Database initialized")
+      # Owner-only commands
+      @self.app.on_message(filters.command("broadcast") & filters.private)
+      async def handle_broadcast(client: Client, message: Message):
+        await broadcast_command(client, message)
       
-      await super().start()
+      @self.app.on_message(filters.command("stats") & filters.private)
+      async def handle_stats(client: Client, message: Message):
+        await stats_command(client, message)
       
-      self.uptime = datetime.now()
-      
-      me = await self.get_me()
-      self.username = '@' + me.username
-      
-      # Register bot commands
-      await self.register_bot_commands()
-      
-      logger.info(f"Bot started successfully: {self.username}")
-      print(f"✅ Bot Started: {self.username}")
+      print("✅ Command handlers registered successfully")
+      print("   • /start (public)")
+      print("   • /broadcast (owner only)")
+      print("   • /stats (owner only)")
+      return True
         
     except Exception as e:
-      logger.error(f"Error starting bot: {e}")
+      print(f"❌ Failed to register handlers: {e}")
+      return False
+
+  async def start_bot(self):
+    """Start the bot."""
+    try:
+      await self.app.start()
+       
+      self.logger = Logger(self.app)
+      self.app._logger = self.logger
+       
+      MongoOperations.init_bot_stats(self.start_time)
+       
+      total_users = MongoOperations.get_total_users()
+      
+      await self.logger.log_bot_started(total_users)
+      
+      print(f"✅ Bot started successfully at {self.start_time.strftime('%Y-%m-%d %H:%M:%S')} UTC")
+      print(f"📊 Total users in database: {total_users:,}")
+      print("\n" + "=" * 60)
+      print("✅ Bot is now running!")
+      print("Press Ctrl+C to stop the bot")
+      print("=" * 60 + "\n")
+       
+      await idle()
+      
+    except KeyboardInterrupt:
+      print("\n⚠️ Bot stopped by user (Ctrl+C)")
+    except Exception as e:
+      print(f"\n❌ Error during bot operation: {e}")
       raise
-
-  async def stop(self, *args):
-    """Stop bot gracefully"""
+    finally:
+      await self.stop_bot()
+  
+  async def stop_bot(self):
+    """Stop the bot."""
+    try:
+      print("\n🔄 Shutting down bot...")
+      if self.app.is_connected:
+        await self.app.stop()
+      db.close()
+      print("✅ Bot shutdown complete")
+    except Exception as e:
+      print(f"⚠️ Warning during shutdown: {e}")
+  
+  def run(self):
+    """Run the bot."""
+    if not self.setup_application():
+      sys.exit(1)
+     
+    if not self.register_handlers():
+      sys.exit(1)
+     
+    print("\n" + "=" * 60)
+    print("🚀 Starting bot...")
+    print("=" * 60)
     
     try:
-      await super().stop()
-      logger.info("Bot stopped successfully")
-      print("👋 Bot Stopped")
+      self.app.run(self.start_bot())
+    except KeyboardInterrupt:
+      print("\n⚠️ Bot stopped by user (Ctrl+C)")
     except Exception as e:
-      logger.error(f"Error stopping bot: {e}")
+      print(f"\n❌ Unexpected error: {e}")
+      sys.exit(1)
 
-
-async def run_flask_async():
-  """Run Flask server in background"""
-  
-  try:
-    app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)
-  except Exception as e:
-    logger.error(f"Flask server error: {e}")
-
-
-def run():
-  """Run bot with Flask server"""
-  
+def main():
+  """Main entry point."""
   try:
     bot = HighTierBots()
-    loop = asyncio.get_event_loop()
-    
     bot.run()
-
   except KeyboardInterrupt:
-    logger.info("Bot interrupted by user")
+    print("\n👋 Goodbye!")
+    sys.exit(0)
   except Exception as e:
-    logger.error(f"Fatal error: {e}")
-    raise
+    print(f"\n❌ Fatal error: {e}")
+    sys.exit(1)
