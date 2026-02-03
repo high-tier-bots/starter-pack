@@ -1,5 +1,6 @@
 flask
 pyrogram
 tgcrypto
-pymongo
+pymongo>=4.0
 python-dotenv
+motor>=3.3.0

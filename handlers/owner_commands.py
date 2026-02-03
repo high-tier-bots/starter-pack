@@ -61,7 +61,7 @@ async def add_channel(bot: Client, message: Message):
       pass  
 
 # Removechannel Command only for Owners
-@Client.on_message(filters.command('removechannel') & filters.user(OWNERS))
+@Client.on_message(filters.command('removechannel') & filters.user(OWNERS_ID))
 async def remove_channel(bot: Client, message: Message):
   """Remove a channel or group from the database"""
   
@@ -86,7 +86,7 @@ async def remove_channel(bot: Client, message: Message):
       pass
     
 # Admin Command only for Owners
-@Client.on_message(filters.command('addadmin') & filters.user(OWNERS))
+@Client.on_message(filters.command('addadmin') & filters.user(OWNERS_ID))
 async def add_admin(bot: Client, message: Message):
   """Add a new admin user"""
   
@@ -111,7 +111,7 @@ async def add_admin(bot: Client, message: Message):
       pass
     
 # Removeadmin Command only for Owners
-@Client.on_message(filters.command('removeadmin') & filters.user(OWNERS))
+@Client.on_message(filters.command('removeadmin') & filters.user(OWNERS_ID))
 async def remove_admin(bot: Client, message: Message):
   """Remove an admin user"""
   
@@ -143,7 +143,7 @@ async def broadcast_command(bot: Client, message):
 
 
 # Stats Command only for Owners
-@Client.on_message(filters.command('ownerstats') & filters.user(OWNERS))
+@Client.on_message(filters.command('ownerstats') & filters.user(OWNERS_ID))
 async def stats_command(bot: Client, message: Message):
   """Enhanced stats command showing bot metrics"""
   
