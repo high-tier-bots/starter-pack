@@ -3,8 +3,11 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from database.mongo import db
+from services.broadcast import broadcast_to_all
 from utils.logger import logger
 from utils.config import OWNERS_ID 
+from services.stats import build_stats_text
+
 
 # Set_force Command only for Owners
 @Client.on_message(filters.command('setforce') & filters.user(OWNERS_ID))
@@ -132,3 +135,27 @@ async def remove_admin(bot: Client, message: Message):
     except:
       pass
     
+# Broadcast Command only for Owners
+@Client.on_message(filters.command("ownerbroadcast") & filters.user(OWNERS_ID) & filters.reply)
+async def broadcast_command(bot: Client, message):
+  """Broadcast message to all users"""
+  await broadcast_to_all(message)
+
+
+# Stats Command only for Owners
+@Client.on_message(filters.command('ownerstats') & filters.user(OWNERS))
+async def stats_command(bot: Client, message: Message):
+  """Enhanced stats command showing bot metrics"""
+  
+  try:
+    stats_text = await build_stats_text(bot)
+    await message.reply(stats_text)
+    
+    logger.info(f"Stats command executed for owner {message.from_user.id}")
+    
+  except Exception as e:
+    logger.error(f"Error in stats command: {e}")
+    try:
+      await message.reply(f"❌ **Error retrieving stats:** `{str(e)}`")
+    except:
+      pass
