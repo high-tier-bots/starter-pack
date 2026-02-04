@@ -1,4 +1,7 @@
+"""
 #(©)HighTierBots - Bot Log Service
+Send message in log group, add more as needed.
+"""
 
 from datetime import datetime
 
